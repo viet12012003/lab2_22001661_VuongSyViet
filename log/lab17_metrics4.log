@@ -1,6 +1,6 @@
 --- Performance Metrics ---
-Pipeline fitting duration: 7.93 seconds
-Data transformation duration: 0.14 seconds
+Pipeline fitting duration: 7.28 seconds
+Data transformation duration: 0.20 seconds
 Actual vocabulary size (after preprocessing): 31355 unique terms
 Vectorizer: Word2Vec, vectorSize=100
 Tokenizer: RegexTokenizer (regex)
