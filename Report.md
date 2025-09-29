@@ -73,8 +73,7 @@
 
 ## 4. Khó khăn gặp phải và cách giải quyết
 
-- Lỗi khi sử dụng Kryo với Java 17+ (InaccessibleObjectException):
-  -> Đã khắc phục bằng cách thêm các tùy chọn `--add-opens` vào `build.sbt` để mở quyền truy cập các module Java cần thiết.
+- Lỗi khi sử dụng Kryo với Java 17+ (InaccessibleObjectException): Đã khắc phục bằng cách thêm các tùy chọn `--add-opens` vào `build.sbt` để mở quyền truy cập các module Java cần thiết.
 - Hash collision khi numFeatures nhỏ hơn số từ vựng: Đã ghi chú rõ trong log và so sánh kết quả giữa các pipeline.
 - Lỗi khi ghi file: Đã kiểm tra và đảm bảo tạo thư mục trước khi ghi.
 
