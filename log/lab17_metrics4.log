@@ -1,0 +1,9 @@
+--- Performance Metrics ---
+Pipeline fitting duration: 7.93 seconds
+Data transformation duration: 0.14 seconds
+Actual vocabulary size (after preprocessing): 31355 unique terms
+Vectorizer: Word2Vec, vectorSize=100
+Tokenizer: RegexTokenizer (regex)
+Metrics file generated at: F:\NLP\lab2_22001661_VuongSyViet\log\lab17_metrics4.log
+
+For detailed stage-level metrics, view the Spark UI at http://localhost:4040 during execution.
