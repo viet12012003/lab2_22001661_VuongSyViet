@@ -1,8 +1,8 @@
 --- Performance Metrics ---
-Pipeline fitting duration: 7.28 seconds
-Data transformation duration: 0.20 seconds
+Pipeline fitting duration: 11.27 seconds
+Data transformation duration: 0.23 seconds
 Actual vocabulary size (after preprocessing): 31355 unique terms
-Vectorizer: Word2Vec, vectorSize=100
+Vectorizer: Word2Vec, vectorSize=100 (normalized)
 Tokenizer: RegexTokenizer (regex)
 Metrics file generated at: F:\NLP\lab2_22001661_VuongSyViet\log\lab17_metrics4.log
 

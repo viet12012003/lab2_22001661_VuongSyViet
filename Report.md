@@ -2,7 +2,7 @@
 
 ## 1. Các bước triển khai
 
-- Đọc dữ liệu từ file `data/c4-train.00000-of-01024-30K.json` (giới hạn 1000 dòng để xử lý nhanh).
+- Đọc dữ liệu từ file `data/c4-train.00000-of-01024-30K.json` (giới hạn số dòng đọc vào qua biến `limitDocuments`, mặc định 1000, có thể sửa trực tiếp trong code).
 - Tiền xử lý văn bản:
   - Tách từ (tokenization) bằng `Tokenizer` hoặc `RegexTokenizer`.
   - Loại bỏ stopwords với `StopWordsRemover`.
@@ -15,6 +15,10 @@
   - Thêm bước phân loại với `LogisticRegression`.
   - Thử vector hóa bằng `Word2Vec`.
 - Ghi log và kết quả ra các file riêng biệt trong thư mục `log/` và `results/`.
+- **Bổ sung các tính năng nâng cao:**
+  - Đo thời gian chi tiết từng bước (fit, transform) cho từng pipeline và ghi vào log.
+  - Chuẩn hóa vector đầu ra của Word2Vec bằng `Normalizer`.
+  - Tìm kiếm tài liệu tương tự nhất bằng cosine similarity: chọn một văn bản bất kỳ, tính độ tương đồng cosine giữa vector của văn bản đó với tất cả các văn bản còn lại, in ra 5 văn bản có độ tương đồng cao nhất (không tính chính nó).
 
 ## 2. Hướng dẫn chạy code và ghi log
 
@@ -23,10 +27,12 @@
   ```
   sbt run
   ```
+  (Có thể sửa trực tiếp biến `limitDocuments` trong code để thay đổi số lượng dòng đọc vào)
 - Kết quả sẽ được ghi ra các file:
   - Log: `log/lab17_metrics.log`, `log/lab17_metrics1.log`, ..., `log/lab17_metrics4.log`
   - Output: `results/lab17_pipeline_output.txt`, `results/lab17_pipeline_output1.txt`, ..., `results/lab17_pipeline_output4.txt`
-- Có thể xem chi tiết các bước pipeline và thời gian thực thi trong file log.
+  - Kết quả tìm kiếm tương tự cosine: `results/lab17_cosine_similarity.txt`
+- Có thể xem chi tiết các bước pipeline, thời gian thực thi từng bước (fit, transform) trong file log.
 
 ## 3. Giải thích kết quả thu được
 
@@ -66,10 +72,18 @@
   - Thông tin về loại tokenizer, vectorizer, classifier sử dụng trong từng pipeline.
   - Đường dẫn file log để tiện tra cứu.
 
-### 3.4. Tổng kết
+### 3.4. Kết quả tìm kiếm tài liệu tương tự (cosine similarity)
+
+- **File `results/lab17_cosine_similarity.txt`**:
+  - Chọn một văn bản bất kỳ (ví dụ: dòng đầu tiên của tập dữ liệu đã xử lý).
+  - Tính toán độ tương đồng cosine giữa vector của văn bản này với tất cả các văn bản còn lại trong tập dữ liệu.
+  - In ra 5 văn bản khác có độ tương đồng cao nhất (không tính chính nó), kèm theo điểm số similarity và trích đoạn văn bản.
+  - Ý nghĩa: Cho phép tìm kiếm nhanh các văn bản có nội dung gần giống nhau trong tập dữ liệu lớn, ứng dụng cho các bài toán tìm kiếm, phát hiện trùng lặp, gợi ý nội dung...
+
+### 3.5. Tổng kết
 
 - Các kết quả cho thấy sự khác biệt rõ rệt giữa các pipeline về cách biểu diễn văn bản, độ chi tiết của vector và khả năng ứng dụng cho các bài toán NLP khác nhau.
-- Việc ghi log chi tiết giúp dễ dàng đánh giá hiệu năng, phát hiện vấn đề và so sánh giữa các phương án triển khai.
+- Việc ghi log chi tiết và bổ sung các phép đo thời gian, chuẩn hóa vector, tìm kiếm tương tự giúp dễ dàng đánh giá hiệu năng, phát hiện vấn đề và so sánh giữa các phương án triển khai.
 
 ## 4. Khó khăn gặp phải và cách giải quyết
 

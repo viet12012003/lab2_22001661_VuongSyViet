@@ -1,0 +1,21 @@
+--- Cosine Similarity Search Results ---
+Query text (first 100 chars): Beginners BBQ Class Taking Place in Missoula!
+Do you want to get better at making delicious BBQ? You...
+
+Top 5 most similar documents:
+#1 | Similarity: 0.9928
+Text: I need to have several "individual" emails written. I call up Mortgage Brokers to get them to use me...
+------------------------------------------------------------
+#2 | Similarity: 0.9903
+Text: Drawing on a unique partnership of private enterprises and public entities, we’re able to give you h...
+------------------------------------------------------------
+#3 | Similarity: 0.9897
+Text: Where is the mail stored in the filesystem?
+I have zentyal 3 with zarafa configured as the mail gate...
+------------------------------------------------------------
+#4 | Similarity: 0.9896
+Text: At the start of the year we began using their very in depth hands-on history project: HISTORY Throug...
+------------------------------------------------------------
+#5 | Similarity: 0.9892
+Text: That Which You Don’t Be Aware Of Write down Essay for my situation You should not must be troubled o...
+------------------------------------------------------------
