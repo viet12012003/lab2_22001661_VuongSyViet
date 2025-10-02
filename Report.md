@@ -16,7 +16,7 @@
   - Thử vector hóa bằng `Word2Vec`.
 - Ghi log và kết quả ra các file riêng biệt trong thư mục `log/` và `results/`.
 - **Bổ sung các tính năng nâng cao:**
-  - Đo thời gian chi tiết từng bước (fit, transform) cho từng pipeline và ghi vào log.
+  - Đo thời gian chi tiết từng bước (đọc dữ liệu, fit, transform, ghi file kết quả) cho tất cả các pipeline và ghi vào log tương ứng.
   - Chuẩn hóa vector đầu ra của Word2Vec bằng `Normalizer`.
   - Tìm kiếm tài liệu tương tự nhất bằng cosine similarity: chọn một văn bản bất kỳ, tính độ tương đồng cosine giữa vector của văn bản đó với tất cả các văn bản còn lại, in ra 5 văn bản có độ tương đồng cao nhất (không tính chính nó).
 
@@ -28,11 +28,11 @@
   sbt run
   ```
   (Có thể sửa trực tiếp biến `limitDocuments` trong code để thay đổi số lượng dòng đọc vào)
-- Kết quả sẽ được ghi ra các file:
-  - Log: `log/lab17_metrics.log`, `log/lab17_metrics1.log`, ..., `log/lab17_metrics4.log`
-  - Output: `results/lab17_pipeline_output.txt`, `results/lab17_pipeline_output1.txt`, ..., `results/lab17_pipeline_output4.txt`
-  - Kết quả tìm kiếm tương tự cosine: `results/lab17_cosine_similarity.txt`
-- Có thể xem chi tiết các bước pipeline, thời gian thực thi từng bước (fit, transform) trong file log.
+  - Kết quả sẽ được ghi ra các file:
+    - Log: `log/lab17_metrics.log`, `log/lab17_metrics1.log`, ..., `log/lab17_metrics4.log`
+    - Output: `results/lab17_pipeline_output.txt`, `results/lab17_pipeline_output1.txt`, ..., `results/lab17_pipeline_output4.txt`
+    - Kết quả tìm kiếm tương tự cosine: `results/lab17_cosine_similarity.txt`
+  - Có thể xem chi tiết các bước pipeline, thời gian thực thi từng bước (đọc dữ liệu, fit, transform, ghi file kết quả) trong file log.
 
 ## 3. Giải thích kết quả thu được
 
@@ -66,7 +66,7 @@
 ### 3.3. Ý nghĩa các file log
 
 - Các file log (`lab17_metrics.log`, `lab17_metrics1.log`, ..., `lab17_metrics4.log`) ghi lại:
-  - Thời gian thực thi từng bước (fit, transform).
+  - Thời gian thực thi từng bước (đọc dữ liệu, fit, transform, ghi file kết quả) cho tất cả các pipeline.
   - Kích thước từ vựng thực tế sau tiền xử lý.
   - Cảnh báo nếu số chiều vector nhỏ hơn số từ vựng (hash collision).
   - Thông tin về loại tokenizer, vectorizer, classifier sử dụng trong từng pipeline.

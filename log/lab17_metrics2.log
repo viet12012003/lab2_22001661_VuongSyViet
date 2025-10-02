@@ -1,6 +1,7 @@
 --- Performance Metrics ---
-Pipeline fitting duration: 2.13 seconds
-Data transformation duration: 0.16 seconds
+Pipeline fitting duration: 2.88 seconds
+Data transformation duration: 0.09 seconds
+Result writing duration: 0.01 seconds
 Actual vocabulary size (after preprocessing): 31355 unique terms
 HashingTF numFeatures set to: 1000
 Note: numFeatures (1000) is smaller than actual vocabulary size (31355). Hash collisions are expected.

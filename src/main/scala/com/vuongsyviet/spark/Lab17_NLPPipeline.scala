@@ -20,17 +20,16 @@ object Lab17_NLPPipeline {
     println("Pausing for 10 seconds to allow you to open the Spark UI...")
     // Thread.sleep(10000)
 
-    val dataPath = """F:/NLP/lab2_22001661_VuongSyViet/data/c4-train.00000-of-01024-30K.json"""
-
-    val limitDocuments = 1000
-    val initialDF = spark.read.json(dataPath).limit(limitDocuments)
-
     def time[R](block: => R): (R, Double) = {
       val t0 = System.nanoTime()
       val result = block
       val t1 = System.nanoTime()
       (result, (t1 - t0) / 1e9d)
     }
+
+    val dataPath = """F:/NLP/lab2_22001661_VuongSyViet/data/c4-train.00000-of-01024-30K.json"""
+    val limitDocuments = 1000
+    val (initialDF, readDuration) = time { spark.read.json(dataPath).limit(limitDocuments) }
 
     // 1. Switch Tokenizers
     val tokenizer1 = new Tokenizer().setInputCol("text").setOutputCol("tokens")
@@ -46,26 +45,30 @@ object Lab17_NLPPipeline {
     val results1 = transformedDF1.select("text", "features").take(20)
     val result_path1 = """F:/NLP/lab2_22001661_VuongSyViet/results/lab17_pipeline_output1.txt"""
     new File(result_path1).getParentFile.mkdirs()
-    val resultWriter1 = new PrintWriter(new File(result_path1))
-    try {
-      resultWriter1.println("--- NLP Pipeline Output (First 20 results) ---")
-      resultWriter1.println(s"Output file generated at: ${new File(result_path1).getAbsolutePath}\n")
-      results1.foreach { row =>
-        resultWriter1.println("="*80)
-        val text = row.getAs[String]("text")
-        val features = row.getAs[org.apache.spark.ml.linalg.Vector]("features")
-        resultWriter1.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
-        resultWriter1.println(s"TF-IDF Vector: ${features.toString}")
-        resultWriter1.println("="*80)
-        resultWriter1.println()
-      }
-      println(s"Successfully wrote results to $result_path1")
-    } finally { resultWriter1.close() }
+    val (writeResult1, writeDuration1) = time {
+      val resultWriter1 = new PrintWriter(new File(result_path1))
+      try {
+        resultWriter1.println("--- NLP Pipeline Output (First 20 results) ---")
+        resultWriter1.println(s"Output file generated at: ${new File(result_path1).getAbsolutePath}\n")
+        results1.foreach { row =>
+          resultWriter1.println("="*80)
+          val text = row.getAs[String]("text")
+          val features = row.getAs[org.apache.spark.ml.linalg.Vector]("features")
+          resultWriter1.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
+          resultWriter1.println(s"TF-IDF Vector: ${features.toString}")
+          resultWriter1.println("="*80)
+          resultWriter1.println()
+        }
+        println(s"Successfully wrote results to $result_path1")
+      } finally { resultWriter1.close() }
+    }
     val logWriter1 = new PrintWriter(new File(log_path1))
     try {
       logWriter1.println("--- Performance Metrics ---")
+      logWriter1.println(f"Data reading duration: $readDuration%.2f seconds")
       logWriter1.println(f"Pipeline fitting duration: $fitDuration1%.2f seconds")
       logWriter1.println(f"Data transformation duration: $transformDuration1%.2f seconds")
+      logWriter1.println(f"Result writing duration: $writeDuration1%.2f seconds")
       logWriter1.println(s"Actual vocabulary size (after preprocessing): $actualVocabSize1 unique terms")
       logWriter1.println(s"HashingTF numFeatures set to: 20000")
       if (20000 < actualVocabSize1) {
@@ -89,26 +92,29 @@ object Lab17_NLPPipeline {
     val results2 = transformedDF2.select("text", "features").take(20)
     val result_path2 = """F:/NLP/lab2_22001661_VuongSyViet/results/lab17_pipeline_output2.txt"""
     new File(result_path2).getParentFile.mkdirs()
-    val resultWriter2 = new PrintWriter(new File(result_path2))
-    try {
-      resultWriter2.println("--- NLP Pipeline Output (First 20 results) ---")
-      resultWriter2.println(s"Output file generated at: ${new File(result_path2).getAbsolutePath}\n")
-      results2.foreach { row =>
-        resultWriter2.println("="*80)
-        val text = row.getAs[String]("text")
-        val features = row.getAs[org.apache.spark.ml.linalg.Vector]("features")
-        resultWriter2.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
-        resultWriter2.println(s"TF-IDF Vector: ${features.toString}")
-        resultWriter2.println("="*80)
-        resultWriter2.println()
-      }
-      println(s"Successfully wrote results to $result_path2")
-    } finally { resultWriter2.close() }
+    val (writeResult2, writeDuration2) = time {
+      val resultWriter2 = new PrintWriter(new File(result_path2))
+      try {
+        resultWriter2.println("--- NLP Pipeline Output (First 20 results) ---")
+        resultWriter2.println(s"Output file generated at: ${new File(result_path2).getAbsolutePath}\n")
+        results2.foreach { row =>
+          resultWriter2.println("="*80)
+          val text = row.getAs[String]("text")
+          val features = row.getAs[org.apache.spark.ml.linalg.Vector]("features")
+          resultWriter2.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
+          resultWriter2.println(s"TF-IDF Vector: ${features.toString}")
+          resultWriter2.println("="*80)
+          resultWriter2.println()
+        }
+        println(s"Successfully wrote results to $result_path2")
+      } finally { resultWriter2.close() }
+    }
     val logWriter2 = new PrintWriter(new File(log_path2))
     try {
       logWriter2.println("--- Performance Metrics ---")
       logWriter2.println(f"Pipeline fitting duration: $fitDuration2%.2f seconds")
       logWriter2.println(f"Data transformation duration: $transformDuration2%.2f seconds")
+      logWriter2.println(f"Result writing duration: $writeDuration2%.2f seconds")
       logWriter2.println(s"Actual vocabulary size (after preprocessing): $actualVocabSize2 unique terms")
       logWriter2.println(s"HashingTF numFeatures set to: 1000")
       if (1000 < actualVocabSize2) {
@@ -136,28 +142,31 @@ object Lab17_NLPPipeline {
     val results3 = transformedDF3.select("text", "label", "prediction", "probability").take(20)
     val result_path3 = """F:/NLP/lab2_22001661_VuongSyViet/results/lab17_pipeline_output3.txt"""
     new File(result_path3).getParentFile.mkdirs()
-    val resultWriter3 = new PrintWriter(new File(result_path3))
-    try {
-      resultWriter3.println("--- NLP Pipeline Output (First 20 results) ---")
-      resultWriter3.println(s"Output file generated at: ${new File(result_path3).getAbsolutePath}\n")
-      results3.foreach { row =>
-        resultWriter3.println("="*80)
-        val text = row.getAs[String]("text")
-        val label = row.getAs[Int]("label")
-        val prediction = row.getAs[Double]("prediction")
-        val probability = row.getAs[org.apache.spark.ml.linalg.Vector]("probability")
-        resultWriter3.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
-        resultWriter3.println(s"Label: $label, Prediction: $prediction, Probability: $probability")
-        resultWriter3.println("="*80)
-        resultWriter3.println()
-      }
-      println(s"Successfully wrote results to $result_path3")
-    } finally { resultWriter3.close() }
+    val (writeResult3, writeDuration3) = time {
+      val resultWriter3 = new PrintWriter(new File(result_path3))
+      try {
+        resultWriter3.println("--- NLP Pipeline Output (First 20 results) ---")
+        resultWriter3.println(s"Output file generated at: ${new File(result_path3).getAbsolutePath}\n")
+        results3.foreach { row =>
+          resultWriter3.println("="*80)
+          val text = row.getAs[String]("text")
+          val label = row.getAs[Int]("label")
+          val prediction = row.getAs[Double]("prediction")
+          val probability = row.getAs[org.apache.spark.ml.linalg.Vector]("probability")
+          resultWriter3.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
+          resultWriter3.println(s"Label: $label, Prediction: $prediction, Probability: $probability")
+          resultWriter3.println("="*80)
+          resultWriter3.println()
+        }
+        println(s"Successfully wrote results to $result_path3")
+      } finally { resultWriter3.close() }
+    }
     val logWriter3 = new PrintWriter(new File(log_path3))
     try {
       logWriter3.println("--- Performance Metrics ---")
       logWriter3.println(f"Pipeline fitting duration: $fitDuration3%.2f seconds")
       logWriter3.println(f"Data transformation duration: $transformDuration3%.2f seconds")
+      logWriter3.println(f"Result writing duration: $writeDuration3%.2f seconds")
       logWriter3.println(s"Actual vocabulary size (after preprocessing): $actualVocabSize3 unique terms")
       logWriter3.println(s"HashingTF numFeatures set to: 20000")
       logWriter3.println(s"Tokenizer: RegexTokenizer (regex)")
@@ -181,26 +190,29 @@ object Lab17_NLPPipeline {
     val results4 = transformedDF4.select("text", "norm_embeddings").take(20)
     val result_path4 = """F:/NLP/lab2_22001661_VuongSyViet/results/lab17_pipeline_output4.txt"""
     new File(result_path4).getParentFile.mkdirs()
-    val resultWriter4 = new PrintWriter(new File(result_path4))
-    try {
-      resultWriter4.println("--- NLP Pipeline Output (First 20 results) ---")
-      resultWriter4.println(s"Output file generated at: ${new File(result_path4).getAbsolutePath}\n")
-      results4.foreach { row =>
-        resultWriter4.println("="*80)
-        val text = row.getAs[String]("text")
-        val embeddings = row.getAs[org.apache.spark.ml.linalg.Vector]("norm_embeddings")
-        resultWriter4.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
-        resultWriter4.println(s"Word2Vec Normalized Embeddings: ${embeddings.toString}")
-        resultWriter4.println("="*80)
-        resultWriter4.println()
-      }
-      println(s"Successfully wrote results to $result_path4")
-    } finally { resultWriter4.close() }
+    val (writeResult4, writeDuration4) = time {
+      val resultWriter4 = new PrintWriter(new File(result_path4))
+      try {
+        resultWriter4.println("--- NLP Pipeline Output (First 20 results) ---")
+        resultWriter4.println(s"Output file generated at: ${new File(result_path4).getAbsolutePath}\n")
+        results4.foreach { row =>
+          resultWriter4.println("="*80)
+          val text = row.getAs[String]("text")
+          val embeddings = row.getAs[org.apache.spark.ml.linalg.Vector]("norm_embeddings")
+          resultWriter4.println(s"Original Text: ${text.substring(0, Math.min(text.length, 100))}...")
+          resultWriter4.println(s"Word2Vec Normalized Embeddings: ${embeddings.toString}")
+          resultWriter4.println("="*80)
+          resultWriter4.println()
+        }
+        println(s"Successfully wrote results to $result_path4")
+      } finally { resultWriter4.close() }
+    }
     val logWriter4 = new PrintWriter(new File(log_path4))
     try {
       logWriter4.println("--- Performance Metrics ---")
       logWriter4.println(f"Pipeline fitting duration: $fitDuration4%.2f seconds")
       logWriter4.println(f"Data transformation duration: $transformDuration4%.2f seconds")
+      logWriter4.println(f"Result writing duration: $writeDuration4%.2f seconds")
       logWriter4.println(s"Actual vocabulary size (after preprocessing): $actualVocabSize4 unique terms")
       logWriter4.println(s"Vectorizer: Word2Vec, vectorSize=100 (normalized)")
       logWriter4.println(s"Tokenizer: RegexTokenizer (regex)")
